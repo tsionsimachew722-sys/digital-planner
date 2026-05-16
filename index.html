@@ -1,45 +1,755 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Simple Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Digital Planner | Smart Timer & Tasks</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Inter', 'Poppins', -apple-system, 'SF Pro Text', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #f0f4fa 0%, #e6ecf3 100%);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* main planner card */
+    .planner-container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* header with logo and name - customizable */
+    .planner-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 3rem;
+      padding: 0.8rem 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+    }
+
+    /* logo area - you can replace the emoji with an image or any icon */
+    .logo-wrapper {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #2c3e66, #1e2f4b);
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .logo-wrapper:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .brand-text {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(125deg, #1e2f4b, #3a5a7c);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    /* customization panel */
+    .customize-panel {
+      display: flex;
+      gap: 12px;
+      background: #ffffffcc;
+      backdrop-filter: blur(4px);
+      padding: 0.5rem 1.2rem;
+      border-radius: 60px;
+      align-items: center;
+      border: 1px solid #ffffff;
+    }
+
+    .customize-panel span {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #2c3e66;
+    }
+
+    .custom-btn {
+      background: #f0f2f8;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 32px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #1e2f4b;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-btn.primary-outline {
+      background: #2c3e66;
+      color: white;
+    }
+
+    .custom-btn.primary-outline:hover {
+      background: #1f2e4f;
+    }
+
+    /* dashboard cards layout */
+    .planner-dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      justify-content: center;
+    }
+
+    /* shared card style */
+    .card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(2px);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.02);
+      padding: 1.6rem 1.8rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .timer-section {
+      flex: 1.2;
+      min-width: 280px;
+      background: linear-gradient(135deg, #ffffff 0%, #fefaf2 100%);
+    }
+
+    .todo-section {
+      flex: 1.8;
+      min-width: 340px;
+      background: linear-gradient(125deg, #ffffff, #fafbff);
+    }
+
+    /* section headers */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 1.5rem;
+      letter-spacing: -0.3px;
+      color: #2c3e66;
+      margin-bottom: 1.2rem;
+      border-left: 5px solid #5e8dbf;
+      padding-left: 1rem;
+    }
+
+    .title-icon {
+      font-size: 1.6rem;
+    }
+
+    /* timer display */
+    .time-visual {
+      background: #1f2a3e;
+      border-radius: 2rem;
+      padding: 1rem 1.2rem;
+      text-align: center;
+      margin-bottom: 1.8rem;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.2), 0 8px 18px rgba(0,0,0,0.1);
+    }
+
+    .clock-digits {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-family: monospace;
+      letter-spacing: 4px;
+      color: #d9e6ff;
+      text-shadow: 0 0 6px #3c6eaf;
+      background: #0e1622;
+      padding: 0.5rem 0.8rem;
+      border-radius: 2rem;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .time-picker-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      align-items: flex-end;
+    }
+
+    .input-group {
+      flex: 1;
+      min-width: 70px;
+    }
+
+    .input-group label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #4f5b73;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 10px 8px;
+      border-radius: 18px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      font-weight: 500;
+    }
+
+    .tone-selector {
+      background: #f4f7fe;
+      border-radius: 1.5rem;
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: #f0f2f8;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    button.primary {
+      background: #2c3e66;
+      color: white;
+      box-shadow: 0 4px 8px rgba(44,62,102,0.2);
+    }
+
+    .todo-input-area {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .todo-input-area input {
+      flex: 3;
+      padding: 12px 16px;
+      border-radius: 48px;
+      border: 1.5px solid #e2edf7;
+      background: white;
+    }
+
+    .tasks-list {
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .task-item {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      border: 1px solid #eef3fc;
+      transition: all 0.15s;
+    }
+
+    .task-check {
+      width: 22px;
+      height: 22px;
+      accent-color: #4b7b9d;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .task-text {
+      flex: 1;
+      font-weight: 500;
+      color: #1a2c3e;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #98a9c7;
+    }
+
+    /* Clean delete button - no basketball / basket icon, just a simple text "Delete" */
+    .delete-task-btn {
+      background: transparent;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 32px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #9aaebf;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .delete-task-btn:hover {
+      background: #fee9e7;
+      color: #d14b4b;
+    }
+
+    /* Optional subtle icon-less style: only text "Delete" */
+    .empty-tasks {
+      text-align: center;
+      padding: 2rem;
+      color: #8fa0bc;
+      font-style: italic;
+    }
+
+    .timer-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      background: #ecf2f9;
+      padding: 8px 16px;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+    }
+
+    .badge {
+      background: #d9e3f0;
+      padding: 2px 10px;
+      border-radius: 40px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #8192b0;
+    }
+
+    @media (max-width: 780px) {
+      .clock-digits { font-size: 2.2rem; }
+      .brand-text { font-size: 1.4rem; }
+      .logo-wrapper { width: 42px; height: 42px; }
+      .logo-icon { font-size: 1.6rem; }
+      .delete-task-btn { padding: 4px 10px; }
+    }
+  </style>
 </head>
 <body>
-    <h2>Simple Calculator</h2>
-    <input type="number" id="num1" placeholder="First number">
-    <input type="number" id="num2" placeholder="Second number">
-    <br><br>
-    <button onclick="add()">+</button>
-    <button onclick="subtract()">-</button>
-    <button onclick="multiply()">*</button>
-    <button onclick="divide()">/</button>
-    <br><br>
-    <p>Result: <span id="result">0</span></p>
+<div class="planner-container">
+  <!-- HEADER WITH CUSTOMIZABLE LOGO & NAME -->
+  <div class="planner-header">
+    <div class="brand" id="brandContainer">
+      <div class="logo-wrapper" id="logoWrapper">
+        <span class="logo-icon" id="logoIcon">📅</span>
+      </div>
+      <span class="brand-text" id="brandNameText">Digital Planner</span>
+    </div>
+    <div class="customize-panel">
+      <span>🎨 Customize</span>
+      <button class="custom-btn" id="changeLogoBtn">🖌️ Change Logo</button>
+      <button class="custom-btn primary-outline" id="changeNameBtn">✏️ Rename Planner</button>
+    </div>
+  </div>
 
-    <script>
-        function add() {
-            let a = parseFloat(document.getElementById('num1').value) || 0;
-            let b = parseFloat(document.getElementById('num2').value) || 0;
-            document.getElementById('result').textContent = a + b;
-        }
-        function subtract() {
-            let a = parseFloat(document.getElementById('num1').value) || 0;
-            let b = parseFloat(document.getElementById('num2').value) || 0;
-            document.getElementById('result').textContent = a - b;
-        }
-        function multiply() {
-            let a = parseFloat(document.getElementById('num1').value) || 0;
-            let b = parseFloat(document.getElementById('num2').value) || 0;
-            document.getElementById('result').textContent = a * b;
-        }
-        function divide() {
-            let a = parseFloat(document.getElementById('num1').value) || 0;
-            let b = parseFloat(document.getElementById('num2').value) || 0;
-            if (b === 0) {
-                document.getElementById('result').textContent = 'Cannot divide by zero';
-            } else {
-                document.getElementById('result').textContent = a / b;
-            }
-        }
-    </script>
+  <div class="planner-dashboard">
+    <!-- TIMER CARD with ringtones -->
+    <div class="card timer-section">
+      <div class="section-title">
+        <span class="title-icon">⏲️</span>
+        <span>Smart Timer</span>
+      </div>
+      <div class="time-visual">
+        <div class="clock-digits" id="timerDisplay">00:00:00</div>
+      </div>
+      <div class="time-picker-row">
+        <div class="input-group"><label>Hours</label><input type="number" id="hoursInput" value="0" min="0" max="23"></div>
+        <div class="input-group"><label>Minutes</label><input type="number" id="minutesInput" value="1" min="0" max="59"></div>
+        <div class="input-group"><label>Seconds</label><input type="number" id="secondsInput" value="0" min="0" max="59"></div>
+      </div>
+      <div class="tone-selector">
+        <label>🔔 Ringtone style</label>
+        <select id="ringtoneSelect">
+          <option value="classic">🎵 Classic Bell</option>
+          <option value="digital">📟 Digital Pulse</option>
+          <option value="chime">🎐 Soft Chime</option>
+          <option value="uplift">✨ Uplift Melody</option>
+        </select>
+      </div>
+      <div class="btn-group">
+        <button id="startTimerBtn" class="primary">▶ Start Timer</button>
+        <button id="pauseTimerBtn">⏸ Pause</button>
+        <button id="resetTimerBtn">🔄 Reset</button>
+      </div>
+      <div class="timer-status"><span>⏳ Status:</span><span id="timerStateLabel" class="badge">Idle</span><span>🎧 tone on ring</span></div>
+    </div>
+
+    <!-- TO-DO LIST SECTION - no basket / basketball icon, clean text delete -->
+    <div class="card todo-section">
+      <div class="section-title">
+        <span class="title-icon">✓</span>
+        <span>Task Flow</span>
+      </div>
+      <div class="todo-input-area">
+        <input type="text" id="taskInput" placeholder="Write a new task... e.g., 'Review project'">
+        <button id="addTaskBtn" class="primary">+ Add task</button>
+      </div>
+      <div class="tasks-list" id="tasksContainer">
+        <div class="empty-tasks">✨ Your tasks will appear here</div>
+      </div>
+      <div style="margin-top: 1rem; font-size:0.7rem; text-align:right;">✔️ check box → mark done | click "Delete" to remove</div>
+    </div>
+  </div>
+  <footer>⚡ Digital Planner • timer + ringtones + clean to-do list | Logo & name fully customizable</footer>
+</div>
+
+<script>
+  // ========== 1. LOGO & NAME CUSTOMIZATION (Dynamic) ==========
+  const logoIconSpan = document.getElementById('logoIcon');
+  const brandNameSpan = document.getElementById('brandNameText');
+  const changeLogoBtn = document.getElementById('changeLogoBtn');
+  const changeNameBtn = document.getElementById('changeNameBtn');
+  
+  function changeLogo() {
+    let newLogo = prompt("🎨 Customize your logo!\nEnter an emoji, symbol, or text (max 3 characters recommended):", logoIconSpan.innerText || "📅");
+    if (newLogo && newLogo.trim().length > 0) {
+      logoIconSpan.innerText = newLogo.trim().slice(0, 4);
+    } else if (newLogo === "") {
+      logoIconSpan.innerText = "📅";
+    }
+    localStorage.setItem('digitalPlanner_logo', logoIconSpan.innerText);
+  }
+  
+  function changePlannerName() {
+    let newName = prompt("✏️ Rename your Digital Planner:", brandNameSpan.innerText);
+    if (newName && newName.trim().length > 0) {
+      brandNameSpan.innerText = newName.trim();
+      localStorage.setItem('digitalPlanner_name', brandNameSpan.innerText);
+      document.title = `${brandNameSpan.innerText} | Smart Planning`;
+    } else if (newName === "") {
+      brandNameSpan.innerText = "Digital Planner";
+      localStorage.setItem('digitalPlanner_name', "Digital Planner");
+      document.title = "Digital Planner | Smart Planning";
+    }
+  }
+  
+  function loadSavedBranding() {
+    const savedLogo = localStorage.getItem('digitalPlanner_logo');
+    if (savedLogo) logoIconSpan.innerText = savedLogo;
+    const savedName = localStorage.getItem('digitalPlanner_name');
+    if (savedName) {
+      brandNameSpan.innerText = savedName;
+      document.title = `${savedName} | Smart Planning`;
+    } else {
+      document.title = "Digital Planner | Smart Planning";
+    }
+  }
+  
+  changeLogoBtn.addEventListener('click', changeLogo);
+  changeNameBtn.addEventListener('click', changePlannerName);
+  loadSavedBranding();
+  
+  // ========== 2. TIMER LOGIC with Ringtone selection ==========
+  let timerInterval = null;
+  let remainingSeconds = 0;
+  let isRunning = false;
+  
+  const timerDisplay = document.getElementById('timerDisplay');
+  const hoursInput = document.getElementById('hoursInput');
+  const minutesInput = document.getElementById('minutesInput');
+  const secondsInput = document.getElementById('secondsInput');
+  const startBtn = document.getElementById('startTimerBtn');
+  const pauseBtn = document.getElementById('pauseTimerBtn');
+  const resetBtn = document.getElementById('resetTimerBtn');
+  const timerStateLabel = document.getElementById('timerStateLabel');
+  const ringtoneSelect = document.getElementById('ringtoneSelect');
+  
+  function updateDisplayFromRemaining() {
+    if (remainingSeconds < 0) remainingSeconds = 0;
+    const hrs = Math.floor(remainingSeconds / 3600);
+    const mins = Math.floor((remainingSeconds % 3600) / 60);
+    const secs = remainingSeconds % 60;
+    timerDisplay.textContent = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  
+  function syncInputsFromRemaining() {
+    const hrs = Math.floor(remainingSeconds / 3600);
+    const mins = Math.floor((remainingSeconds % 3600) / 60);
+    const secs = remainingSeconds % 60;
+    hoursInput.value = hrs;
+    minutesInput.value = mins;
+    secondsInput.value = secs;
+  }
+  
+  function getSecondsFromInputs() {
+    let hrs = parseInt(hoursInput.value) || 0;
+    let mins = parseInt(minutesInput.value) || 0;
+    let secs = parseInt(secondsInput.value) || 0;
+    hrs = Math.min(23, Math.max(0, hrs));
+    mins = Math.min(59, Math.max(0, mins));
+    secs = Math.min(59, Math.max(0, secs));
+    return (hrs * 3600) + (mins * 60) + secs;
+  }
+  
+  function stopTimer() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    isRunning = false;
+    timerStateLabel.textContent = 'Paused / Idle';
+  }
+  
+  function playRingtone() {
+    const selectedTone = ringtoneSelect.value;
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioCtx.currentTime;
+      function beep(freq, duration, startOffset, volume = 0.3) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(volume, now + startOffset);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + startOffset + duration);
+        osc.start(now + startOffset);
+        osc.stop(now + startOffset + duration);
+      }
+      if (selectedTone === 'classic') {
+        beep(880, 0.4, 0, 0.35);
+        beep(660, 0.45, 0.45, 0.35);
+        beep(880, 0.3, 1.0, 0.3);
+      } else if (selectedTone === 'digital') {
+        for (let i = 0; i < 3; i++) beep(1200, 0.12, i * 0.25, 0.25);
+        beep(800, 0.35, 0.75, 0.3);
+      } else if (selectedTone === 'chime') {
+        beep(523.25, 0.6, 0, 0.2);
+        beep(659.25, 0.6, 0.5, 0.2);
+        beep(783.99, 0.8, 1.0, 0.2);
+      } else if (selectedTone === 'uplift') {
+        beep(587.33, 0.3, 0, 0.25);
+        beep(698.46, 0.3, 0.35, 0.25);
+        beep(880, 0.4, 0.7, 0.3);
+        beep(987.77, 0.5, 1.15, 0.3);
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) { console.warn("audio preview not critical"); }
+  }
+  
+  function onTimerComplete() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    isRunning = false;
+    remainingSeconds = 0;
+    updateDisplayFromRemaining();
+    timerStateLabel.textContent = "🔔 Time's up!";
+    playRingtone();
+    const timerCard = document.querySelector('.timer-section');
+    timerCard.style.transition = "0.2s";
+    timerCard.style.boxShadow = "0 0 0 2px #e6b422, 0 12px 28px rgba(0,0,0,0.1)";
+    setTimeout(() => timerCard.style.boxShadow = "", 800);
+    syncInputsFromRemaining();
+  }
+  
+  function tick() {
+    if (remainingSeconds <= 0) { if (isRunning) onTimerComplete(); return; }
+    remainingSeconds--;
+    updateDisplayFromRemaining();
+    if (remainingSeconds === 0 && isRunning) onTimerComplete();
+  }
+  
+  function startTimer() {
+    if (isRunning) return;
+    if (remainingSeconds <= 0 && !isRunning) {
+      const newSec = getSecondsFromInputs();
+      if (newSec <= 0) { timerStateLabel.textContent = "Set time > 0"; return; }
+      remainingSeconds = newSec;
+      updateDisplayFromRemaining();
+      syncInputsFromRemaining();
+    }
+    if (remainingSeconds <= 0) return;
+    if (timerInterval) clearInterval(timerInterval);
+    isRunning = true;
+    timerStateLabel.textContent = "⏵ Running";
+    timerInterval = setInterval(() => { if (!isRunning) return; tick(); if (remainingSeconds <= 0) { if (timerInterval) clearInterval(timerInterval); timerInterval=null; isRunning=false; } }, 1000);
+  }
+  
+  function pauseTimer() {
+    if (!isRunning) return;
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    isRunning = false;
+    timerStateLabel.textContent = "⏸ Paused";
+  }
+  
+  function resetTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+    isRunning = false;
+    remainingSeconds = getSecondsFromInputs();
+    updateDisplayFromRemaining();
+    syncInputsFromRemaining();
+    timerStateLabel.textContent = "Reset / Idle";
+  }
+  
+  function syncRemainingFromInputsIfIdle() { if (!isRunning) { remainingSeconds = getSecondsFromInputs(); updateDisplayFromRemaining(); timerStateLabel.textContent = "Idle (ready)"; } }
+  hoursInput.addEventListener('input', syncRemainingFromInputsIfIdle);
+  minutesInput.addEventListener('input', syncRemainingFromInputsIfIdle);
+  secondsInput.addEventListener('input', syncRemainingFromInputsIfIdle);
+  startBtn.addEventListener('click', startTimer);
+  pauseBtn.addEventListener('click', pauseTimer);
+  resetBtn.addEventListener('click', resetTimer);
+  remainingSeconds = getSecondsFromInputs();
+  updateDisplayFromRemaining();
+  
+  // ========== 3. TO-DO LIST with checkboxes & clean "Delete" text (no basketball / trash icons) ==========
+  let tasks = [];
+  const taskInputEl = document.getElementById('taskInput');
+  const addTaskBtnEl = document.getElementById('addTaskBtn');
+  const tasksContainer = document.getElementById('tasksContainer');
+  
+  function saveTasksToLocal() { localStorage.setItem('digitalPlanner_tasks', JSON.stringify(tasks)); }
+  
+  function renderTasks() {
+    if (!tasksContainer) return;
+    if (tasks.length === 0) {
+      tasksContainer.innerHTML = `<div class="empty-tasks">🌱 No tasks yet. Add something meaningful!</div>`;
+      return;
+    }
+    tasksContainer.innerHTML = '';
+    tasks.forEach(task => {
+      const taskDiv = document.createElement('div');
+      taskDiv.className = 'task-item';
+      
+      // Checkbox
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'task-check';
+      checkbox.checked = task.completed;
+      checkbox.addEventListener('change', (e) => {
+        task.completed = e.target.checked;
+        renderTasks();
+        saveTasksToLocal();
+      });
+      
+      // Task text
+      const taskTextSpan = document.createElement('span');
+      taskTextSpan.className = `task-text ${task.completed ? 'completed' : ''}`;
+      taskTextSpan.innerText = task.text;
+      
+      // Clean delete BUTTON - simple text "Delete", no basket, no trash, no icon
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.className = 'delete-task-btn';
+      deleteBtn.setAttribute('aria-label', 'Delete task');
+      deleteBtn.addEventListener('click', () => {
+        tasks = tasks.filter(t => t.id !== task.id);
+        renderTasks();
+        saveTasksToLocal();
+      });
+      
+      taskDiv.appendChild(checkbox);
+      taskDiv.appendChild(taskTextSpan);
+      taskDiv.appendChild(deleteBtn);
+      tasksContainer.appendChild(taskDiv);
+    });
+  }
+  
+  function addNewTask() {
+    const rawText = taskInputEl.value.trim();
+    if (rawText === "") {
+      taskInputEl.placeholder = "Write a task first!";
+      setTimeout(() => { taskInputEl.placeholder = "Write a new task..."; }, 1200);
+      return;
+    }
+    tasks.unshift({ id: Date.now(), text: rawText, completed: false });
+    renderTasks();
+    saveTasksToLocal();
+    taskInputEl.value = '';
+    taskInputEl.focus();
+  }
+  
+  function loadTasksFromLocal() {
+    const stored = localStorage.getItem('digitalPlanner_tasks');
+    if (stored) {
+      try { tasks = JSON.parse(stored); } catch(e) { tasks = []; }
+    } else {
+      // Sample tasks (no strange icons, just meaningful)
+      tasks = [
+        { id: Date.now()+1, text: "🎯 Try changing the logo above!", completed: false },
+        { id: Date.now()+2, text: "⏰ Set a timer with 'Uplift' ringtone", completed: false },
+        { id: Date.now()+3, text: "✅ Check off this task", completed: true },
+        { id: Date.now()+4, text: "📝 Delete me using 'Delete' button", completed: false }
+      ];
+    }
+    renderTasks();
+  }
+  
+  addTaskBtnEl.addEventListener('click', addNewTask);
+  taskInputEl.addEventListener('keypress', (e) => { if (e.key === 'Enter') addNewTask(); });
+  loadTasksFromLocal();
+  
+  // Gentle ringtone preview on select change (short beep)
+  ringtoneSelect.addEventListener('change', () => {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = 750;
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now+0.25);
+      osc.start(now);
+      osc.stop(now+0.25);
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch(e) {}
+  });
+</script>
 </body>
 </html>
